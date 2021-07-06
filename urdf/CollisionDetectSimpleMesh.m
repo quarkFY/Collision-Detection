@@ -1,15 +1,50 @@
 %% Load the model
-clear all; close all;
-robot = importrobot('Zu7.urdf');
-robot.DataFormat = 'column';
+% clear all; close all;
+% robot = importrobot('Zu7.urdf');
+% robot.DataFormat = 'column';
+% ConfigZero = [0 pi/2 0 pi/2 0 0]';
+%%
+% currConfig = [pi/4 pi/6 -pi*2/5 pi/4 pi/3 0]';
+% show(robot,currConfig,'visuals','on','collision','off');
+%%
+for i = 1:robot.NumBodies
+    clearCollision(robot.Bodies{i})
+end
+% show(robot,ConfigZero,'Collisions','on','Visuals','off');
+Trans = zeros(4,4,8);
+%
+r3 = 0.07; h3 = 0.2;
+mat = axang2tform([0 0 1 pi/2]); Trans(:,:,3) = eye(4,4) * mat;
+collisionObj3 = collisionCylinder(r3,h3); collisionObj3.Pose = Trans(:,:,3);
+addCollision(robot.Bodies{3},collisionObj3);
+%
+x4 = 0.5; y4 = 0.12; z4 = 0.17;
+Trans(:,:,4) = [eye(3,3) [x4/2-0.06; 0; -z4/2-0.07]; 0 0 0 1];
+collisionObj4 = collisionBox(x4,y4,z4); collisionObj4.Pose = Trans(:,:,4);
+addCollision(robot.Bodies{4},collisionObj4);
+%
+x5 = 0.4; y5 = 0.13; z5 = 0.13;
+Trans(:,:,5) = [eye(3,3) [x5/2-0.055; 0; -0.01]; 0 0 0 1];
+collisionObj5 = collisionBox(x5,y5,z5); collisionObj5.Pose = Trans(:,:,5);
+addCollision(robot.Bodies{5},collisionObj5);
+%
+r6 = 0.04; h6 = 0.14;
+mat = axang2tform([1 0 0 pi/2]); Trans(:,:,6) = [eye(3,3) [0; -h6/2+0.07; 0]; 0 0 0 1]*mat;
+collisionObj6 = collisionCylinder(r6,h6); collisionObj6.Pose = Trans(:,:,6);
+addCollision(robot.Bodies{6},collisionObj6);
+%
+r7 = 0.045; h7 = 0.19;
+mat = axang2tform([1 0 0 pi/2]); Trans(:,:,7) = [eye(3,3) [0; 0.005; 0]; 0 0 0 1]*mat;
+collisionObj7 = collisionCylinder(r7,h7); collisionObj7.Pose = Trans(:,:,7);
+addCollision(robot.Bodies{7},collisionObj7);
+% Trans(:,:,8) = [eye(3,3) [0; 0; 0]; 0 0 0 1];
+% collisionObj8 = collisionCylinder(0.05,0.25);
+
 ConfigZero = [0 pi/2 0 pi/2 0 0]';
-% ConfigZero = [0 pi*0.8/2 -pi/5 pi/2 pi/5 0]';
-%%
-currConfig = [pi/4 pi/6 -pi*2/5 pi/4 pi/3 0]';
-show(robot,currConfig,'visuals','on','collision','off');
-%%
-clearCollision(robot.Bodies{1}); % Base link model cause self-collision
-% Joint 1 and Joint 6 will not commit to a collision
+show(robot,ConfigZero,'Collisions','on','Visuals','on');
+isConfigInCollision = checkCollision(robot,ConfigZero,'Exhaustive','on');
+isConfigInCollision
+%% 
 deg2ard = pi/180;
 lim_deg = [-270 -85 -175 -85 -270 -270; 270 265 175 265 270 270];
 lim = lim_deg * deg2ard;
@@ -46,7 +81,6 @@ for i = 1:100
         if (isConfigInCollision(i+1))
             msg(i+1) = 1;
             qCurr(:,i+1) = qCurr(:,i) + vCurr(:,i)*step - (0.5*aMax*step^2).*sign(vCurr(:,i)); 
-            disp(qCurr(:,i+1)-q(:,i+1));
             vCurr(:,i+1) = (qCurr(:,i+1) - qCurr(:,i)) / step; % de-acceleration with aMax
         else
             msg(i+1) = 0;
