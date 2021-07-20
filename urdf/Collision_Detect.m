@@ -1,4 +1,5 @@
 function [isConfigInCollision, q_plan, v_plan] = Collision_Detect(q_last, v_last, q_tar)
+global JAKAzu7Tree
 step = 80/1000; % step needs to be decide
 v_max = pi; a_max = 2*pi; q_step_max = pi / 18;
 v_safe = 5; a_safe = 2;
@@ -20,7 +21,7 @@ if (deltaq_max >= v_max * step)
 end
 dq_max = max(abs(deltaq)) / step;
 q_predict = q_tar + v_next * dq_max / (2*a_max);
-isConfigInCollision = checkCollision(robot,q_predict,'Exhaustive','on');
+isConfigInCollision = checkCollision(JAKAzu7Tree,q_predict,'Exhaustive','on');
 if (isConfigInCollision)
     % BUG FIXED!!!!! Be care of the inverse of speed!!!
     v_decrease = - sign(v_last) * step * a_max;

@@ -85,51 +85,51 @@ show(robot,ConfigZero,'Collisions','on','Visuals','on');
 isConfigInCollision = checkCollision(robot,ConfigZero,'Exhaustive','on');
 isConfigInCollision
 %% 
-deg2ard = pi/180;
-lim_deg = [-270 -85 -175 -85 -270 -270; 270 265 175 265 270 270];
-lim = lim_deg * deg2ard;
-vSafe = 5; aSafe = 2;
-%% real-time collistion detect
-% Define collision-free start & goal configurations
-% startConfig = [0 0 pi/4 0 -pi/2 pi/8]';
-% goalConfig = [0 pi/2 -pi*3/2 0 -pi/2 pi/8]';
-startConfig = [0 pi/3 pi/4 pi/2 pi/2 pi/8]';
-goalConfig = [0 pi/2 -pi*3/2 -pi/2 -pi/2 pi/8]';
-[q,qd,qdd,T] = trapveltraj([startConfig goalConfig],1001,'EndTime',3);
-%%
-vMax = pi; aMax = 2*pi;
-isConfigInCollision = false(1001,1);
-datestr(now,'mmmm dd,yyyy HH:MM:SS.FFF')
-qCurr = zeros(6,1001);
-vCurr = zeros(6,1001);
-qCurr(:,1) = q(:,1); % q sent to JAKA
-vCurr(:,1) = qd(:,1); % v sent to JAKA
-msg = zeros(1,1001);
-isConfigInCollision(1) = checkCollision(robot,qCurr(:,1),'Exhaustive','on');
-msg(1) = 0; % Must start from a collision free configration
-for i = 1:1000
-    step = T(i+1) - T(i);
-    vNext = (q(:,i+1) - qCurr(:,i)) / step;
-    check = max(abs(vNext));
-    if (check >= vMax)
-        msg(i+1) = -1;
-        qCurr(:,i+1) = qCurr(:,i);
-        vCurr(:,i+1) = [0 0 0 0 0 0].';
-    else
-        preConfig = q(:,i+1) + vCurr(:,i)*check / (2*aMax);
-        isConfigInCollision(i+1) = checkCollision(robot,preConfig,'Exhaustive','on');
-        if (isConfigInCollision(i+1))
-            msg(i+1) = 1;
-            qCurr(:,i+1) = qCurr(:,i) + vCurr(:,i)*step - (0.5*aMax*step^2).*sign(vCurr(:,i)); 
-            vCurr(:,i+1) = (qCurr(:,i+1) - qCurr(:,i)) / step; % de-acceleration with aMax
-        else
-            msg(i+1) = 0;
-            qCurr(:,i+1) = q(:,i+1);
-            vCurr(:,i+1) = vNext;
-        end
-    end
-end
-datestr(now,'mmmm dd,yyyy HH:MM:SS.FFF')
+% deg2ard = pi/180;
+% lim_deg = [-270 -85 -175 -85 -270 -270; 270 265 175 265 270 270];
+% lim = lim_deg * deg2ard;
+% vSafe = 5; aSafe = 2;
+% %% real-time collistion detect
+% % Define collision-free start & goal configurations
+% % startConfig = [0 0 pi/4 0 -pi/2 pi/8]';
+% % goalConfig = [0 pi/2 -pi*3/2 0 -pi/2 pi/8]';
+% startConfig = [0 pi/3 pi/4 pi/2 pi/2 pi/8]';
+% goalConfig = [0 pi/2 -pi*3/2 -pi/2 -pi/2 pi/8]';
+% [q,qd,qdd,T] = trapveltraj([startConfig goalConfig],1001,'EndTime',3);
+% %%
+% vMax = pi; aMax = 2*pi;
+% isConfigInCollision = false(1001,1);
+% datestr(now,'mmmm dd,yyyy HH:MM:SS.FFF')
+% qCurr = zeros(6,1001);
+% vCurr = zeros(6,1001);
+% qCurr(:,1) = q(:,1); % q sent to JAKA
+% vCurr(:,1) = qd(:,1); % v sent to JAKA
+% msg = zeros(1,1001);
+% isConfigInCollision(1) = checkCollision(robot,qCurr(:,1),'Exhaustive','on');
+% msg(1) = 0; % Must start from a collision free configration
+% for i = 1:1000
+%     step = T(i+1) - T(i);
+%     vNext = (q(:,i+1) - qCurr(:,i)) / step;
+%     check = max(abs(vNext));
+%     if (check >= vMax)
+%         msg(i+1) = -1;
+%         qCurr(:,i+1) = qCurr(:,i);
+%         vCurr(:,i+1) = [0 0 0 0 0 0].';
+%     else
+%         preConfig = q(:,i+1) + vCurr(:,i)*check / (2*aMax);
+%         isConfigInCollision(i+1) = checkCollision(robot,preConfig,'Exhaustive','on');
+%         if (isConfigInCollision(i+1))
+%             msg(i+1) = 1;
+%             qCurr(:,i+1) = qCurr(:,i) + vCurr(:,i)*step - (0.5*aMax*step^2).*sign(vCurr(:,i)); 
+%             vCurr(:,i+1) = (qCurr(:,i+1) - qCurr(:,i)) / step; % de-acceleration with aMax
+%         else
+%             msg(i+1) = 0;
+%             qCurr(:,i+1) = q(:,i+1);
+%             vCurr(:,i+1) = vNext;
+%         end
+%     end
+% end
+% datestr(now,'mmmm dd,yyyy HH:MM:SS.FFF')
 
 %% visualization
 % pic=figure('name','Animation');

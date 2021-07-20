@@ -3,12 +3,16 @@ clear
 clc
 close all
 warning off all
+%%
+filepath = 'D:\00 SJTU Master Course\Spring 2021\Mechatronics\Collision Detect\Zu7';
+global JAKAzu7Tree
+JAKAzu7Tree = JAKAzu7TreeModel(filepath);
 %% 设置连接参数，要连接的地址为127.0.0.1(即本地主机)，端口号为5000，作为客户机连接。
 Client=tcpip('127.0.0.1',5000,'NetworkRole','client');
 % Client.set(
 Client.BytesAvailable;
 %%
-RbtC8 = QinzheC8().SerialRobot;
+RbtC8 = JAKAzu7Tree().SerialRobot;
 %% 建立连接，建立完成后进行下一步，否则报错
 tic
 time = 5;
