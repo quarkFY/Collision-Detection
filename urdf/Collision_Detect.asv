@@ -18,7 +18,7 @@ if (deltaq_max >= v_max * step)
     deltaq = deltaq * v_max * step / deltaq_max;
     isMoveTooFast = 1;
 end
-dq_max = max(abs(deltaq)) / step;
+dq_max = max(abs(deltaq));
 q_predict = q_tar + v_next * dq_max / (2*a_max);
 isConfigInCollision = checkCollision(robot,q_predict,'Exhaustive','on');
 if (isConfigInCollision)
