@@ -1,11 +1,11 @@
 %% Load the model
-% clear all; close all;
-% robot = importrobot('Zu7.urdf');
-% robot.DataFormat = 'column';
-% ConfigZero = [0 pi/2 0 pi/2 0 0]';
-%%
-% currConfig = [pi/4 pi/6 -pi*2/5 pi/4 pi/3 0]';
-% show(robot,currConfig,'visuals','on','collision','off');
+clear all; close all;
+robot = importrobot('Zu7.urdf');
+robot.DataFormat = 'column';
+ConfigZero = [0 pi/2 0 pi/2 0 0]';
+%
+currConfig = [pi/4 pi/6 -pi*2/5 pi/4 pi/3 0]';
+show(robot,currConfig,'visuals','on','collision','off');
 %%
 for i = 1:robot.NumBodies
     clearCollision(robot.Bodies{i})
